@@ -1,3 +1,7 @@
+const toArray = (value) => Array.isArray(value)
+  ? value
+  : [value];
+
 module.exports = (model) => {
   const schema = {};
 
@@ -5,14 +9,14 @@ module.exports = (model) => {
     switch (typeof value) {
       case 'function':
         schema[key] = {
-          type: typeof value(),
+          types: [typeof value()],
           required: true,
         };
 
         break;
       case 'object':
         schema[key] = {
-          type: typeof value.type(),
+          types: toArray(value.type).map(type => typeof type()),
           required: value.validate ? true : value.required,
           validate: value.validate,
         };
@@ -24,8 +28,10 @@ module.exports = (model) => {
   return (body) => {
     const errors = [];
 
-    Object.entries(schema).forEach(([key, { type, required, validate }]) => {
+    Object.entries(schema).forEach(([key, { types, required, validate }]) => {
       const value = body[key];
+      const valueType = typeof value;
+      const isInvalidType = types.every(type => valueType !== type);
 
       if (!required && !value) {
         return;
@@ -37,8 +43,8 @@ module.exports = (model) => {
         return;
       }
 
-      if (typeof value !== type) {
-        errors.push(`${key} is expected to be a ${type}`);
+      if (isInvalidType) {
+        errors.push(`${key} is expected to be a ${types.join('/')}`);
 
         return;
       }

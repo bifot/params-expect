@@ -7,7 +7,7 @@ module.exports = (model) => {
     const errors = expect({
       ...ctx.params,
       ...ctx.query,
-      ...ctx.body,
+      ...ctx.request.body,
     });
 
     if (!errors.length) {
