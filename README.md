@@ -1,11 +1,11 @@
-# body-expect
+# params-expect
 
 Simple package for validate request body in Koa, Express... or anywhere.
 
 ## Install
 
 ```sh
-$ npm i body-expect
+$ npm i params-expect
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ $ npm i body-expect
 ```js
 const express = require('express');
 const bodyParser = require('body-parser');
-const expect = require('body-expect/express');
+const expect = require('params-expect/express');
 
 const app = express();
 
@@ -66,7 +66,7 @@ app.listen(process.env.PORT);
 const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
-const expect = require('body-expect/koa');
+const expect = require('params-expect/koa');
 
 const app = new Koa();
 const router = new Router();
@@ -111,7 +111,7 @@ app.listen(process.env.PORT);
 ### Abstract
 
 ```js
-const createSchema = require('body-expect');
+const createSchema = require('params-expect');
 
 const expect = createSchema({
   foo: String,
