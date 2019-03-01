@@ -21,6 +21,16 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  req.params = {
+    ...req.params,
+    ...req.query,
+    ...req.body,
+  };
+
+  next();
+});
+
 app.post(
   '/users',
   expect({
@@ -56,7 +66,7 @@ app.listen(process.env.PORT);
 const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
-const expect = require('bode-expect/koa');
+const expect = require('body-expect/koa');
 
 const app = new Koa();
 const router = new Router();
@@ -75,10 +85,20 @@ router.post(
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
+  ctx.params = {
+    ...ctx.params,
+    ...ctx.query,
+    ...ctx.request.body,
+  };
+
+  await next();
+});
+
+app.use(async (ctx, next) => {
   try {
     await next();
   } catch (err) {    
-    ctx.staus = err.status || 500;
+    ctx.status = err.status || 500;
     ctx.body = err.message || 'Server error.';
   }
 });
