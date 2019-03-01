@@ -33,10 +33,14 @@ module.exports = (model) => {
 
       if (!value) {
         errors.push(`${key} is required`);
+
+        return;
       }
 
       if (typeof value !== type) {
         errors.push(`${key} is expected to be a ${type}`);
+
+        return;
       }
 
       if (validate && !validate(value)) {
