@@ -24,4 +24,22 @@ describe('expect', () => {
       'firstName is expected to be a string',
     ]);
   });
+
+  it('should validate & transform body', () => {
+    const body = {
+      age: '20',
+    };
+
+    const schema = createSchema({
+      age: {
+        type: [String, Number],
+        transform: age => +age,
+        validate: age => age === 20,
+      },
+    });
+    const errors = schema(body);
+
+    expect(errors).to.be.an('array').to.have.length(0);
+    expect(body.age).to.be.equal(20);
+  });
 });

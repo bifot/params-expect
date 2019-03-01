@@ -19,6 +19,7 @@ module.exports = (model) => {
           types: toArray(value.type).map(type => typeof type()),
           required: value.validate ? true : value.required,
           validate: value.validate,
+          transform: value.transform,
         };
 
         break;
@@ -28,10 +29,15 @@ module.exports = (model) => {
   return (body) => {
     const errors = [];
 
-    Object.entries(schema).forEach(([key, { types, required, validate }]) => {
-      const value = body[key];
+    Object.entries(schema).forEach(([key, { types, required, validate, transform }]) => {
+      const value = transform ? transform(body[key]) : body[key];
       const valueType = typeof value;
       const isInvalidType = types.every(type => valueType !== type);
+
+      // reassign value in object if changed
+      if (value !== body[key]) {
+        body[key] = value;
+      }
 
       if (!required && !value) {
         return;
