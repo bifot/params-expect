@@ -1,4 +1,4 @@
-const createSchema = require('../src');
+const createSchema = require('./src');
 
 module.exports = (model) => {
   const expect = createSchema(model);
